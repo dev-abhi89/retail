@@ -12,9 +12,7 @@ import AppColors from '../../common/AppColors';
 import DatabaseServices from '../../services/DatabaseService';
 import {useNavigation} from '@react-navigation/native';
 import AppBar from '../../components/AppBar';
-import FilterComponent from '../../components/FilterUi';
 import BottomFilterModal from '../../components/BottomFilterModal';
-import SnackbarCustom from '../../components/SnackBar';
 
 export default function Dashboard() {
   const [storesData, setstoresData] = useState([]);
@@ -27,10 +25,10 @@ export default function Dashboard() {
   const [filters, setFilters] = useState(null);
 
   useEffect(() => {
-    integrateData();
+    initData();
   }, []);
 
-  async function integrateData() {
+  async function initData() {
     if (noPagination) return;
     if (
       pagination.total_pages === -1 ||
@@ -89,7 +87,7 @@ export default function Dashboard() {
           renderItem={renderItem}
           keyExtractor={item => item.id}
           onEndReachedThreshold={0.2}
-          onEndReached={integrateData}
+          onEndReached={initData}
           ListEmptyComponent={() => (
             <View style={styles.noDataContainer}>
               <Text style={styles.noDataText}>No Data Found</Text>
@@ -113,7 +111,6 @@ export default function Dashboard() {
         }}
         onFilterChange={handleFilter}
       />
-      {/* <SnackbarCustom visible={true} handleCancel={() => {}} timeOut={2000} /> */}
     </View>
   );
 }
