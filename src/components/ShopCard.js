@@ -1,19 +1,18 @@
-import React from 'react';
-import {View, Text, TouchableOpacity, StyleSheet} from 'react-native';
+import React, {useMemo} from 'react';
+import {View, Text, TouchableOpacity, StyleSheet, Image} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
+import Assets from '../common/Images';
+import AppColors from '../common/AppColors';
 
-const ShopCard = ({
-  shopData = {
-    type: 'General Store',
-    name: 'U2_SANJAY TRADERS',
-    route: 'r6',
-    area: 'HSR',
-    address:
-      'AGARWAL SANJAY TRADERS Ramghat Road, Vishnupuri, Near water tank, sector 5C, Agra, UP',
-  },
-  onPress = () => {},
-}) => {
+const ShopCard = ({shopData}) => {
   const navigation = useNavigation();
+  const name = useMemo(() => {
+    try {
+      return shopData.name.split('U1_')[1];
+    } catch {
+      return shopData.name;
+    }
+  }, [shopData]);
 
   return (
     <TouchableOpacity
@@ -22,9 +21,48 @@ const ShopCard = ({
         navigation.navigate('Upload', {shop: shopData});
       }}>
       <View style={styles.card}>
-        <Text style={styles.name}>{shopData.name}</Text>
-        <Text style={styles.type}>{shopData.type}</Text>
-        <Text style={styles.area}>{shopData.area}</Text>
+        <View
+          style={{
+            flexDirection: 'row',
+            justifyContent: 'flex-start',
+            flex: 1,
+          }}>
+          <Image
+            source={Assets.store}
+            style={{width: 40, height: 40, marginRight: 8}}
+          />
+
+          <View style={{flex: 1}}>
+            <Text style={styles.name}>{name}</Text>
+            <View
+              style={{
+                flexDirection: 'row',
+                justifyContent: 'space-between',
+                flex: 1,
+              }}>
+              <Text style={styles.type}>{shopData.type}</Text>
+            </View>
+          </View>
+          <View
+            style={{
+              flexDirection: 'row',
+              borderWidth: 1,
+              borderColor: AppColors.secondaryBorder,
+              borderRadius: 16,
+              paddingVertical: 4,
+              paddingHorizontal: 8,
+              justifyContent: 'center',
+              alignItems: 'center',
+              height: 32,
+              backgroundColor: AppColors.whiteChatBackground,
+            }}>
+            <Image
+              source={Assets.location}
+              style={{width: 14, height: 14, marginRight: 8}}
+            />
+            <Text style={styles.area}>{shopData.area}</Text>
+          </View>
+        </View>
         <Text style={styles.address}>{shopData.address}</Text>
       </View>
     </TouchableOpacity>
@@ -39,6 +77,7 @@ const styles = StyleSheet.create({
     padding: 16,
     borderRadius: 8,
     marginBottom: 16,
+    flex: 1,
   },
   name: {
     color: '#D45339',
@@ -46,8 +85,10 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   type: {
-    fontSize: 14,
-    marginTop: 8,
+    fontSize: 12,
+    marginTop: 0,
+    fontWeight: '700',
+    color: AppColors.secondaryText,
   },
   area: {
     fontSize: 12,

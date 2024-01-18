@@ -13,7 +13,6 @@ import DatabaseServices from '../../services/DatabaseService';
 import storage from '@react-native-firebase/storage';
 import showMsg from '../../services/snackBar';
 import {useNavigation} from '@react-navigation/native';
-import AppBar from '../../components/AppBar';
 
 const GalleryScreen = ({route}) => {
   const navigation = useNavigation();
@@ -30,7 +29,6 @@ const GalleryScreen = ({route}) => {
         if (!i?.assets) return;
         setImages(prev => [...prev, i.assets[0]]);
       });
-      // uploadfunc(im);
     } catch (e) {
       console.log(e);
     }
@@ -59,8 +57,7 @@ const GalleryScreen = ({route}) => {
   return (
     <View style={styles.container}>
       {/* <AppBar title="Upload images" /> */}
-      <View
-        style={{flexDirection: 'row', justifyContent: 'flex-end', margin: 8}}>
+      <View style={styles.pickerContainer}>
         <TouchableOpacity onPress={imgPicker} style={styles.button}>
           <Text style={styles.buttonText}>ADD</Text>
         </TouchableOpacity>
@@ -71,16 +68,8 @@ const GalleryScreen = ({route}) => {
         keyExtractor={item => item}
         numColumns={2}
         ListEmptyComponent={() => (
-          <View
-            style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-            <Text
-              style={{
-                fontSize: 14,
-                fontWeight: '700',
-                color: AppColors.secondaryText,
-              }}>
-              No Image Selected
-            </Text>
+          <View style={styles.flatListContainer}>
+            <Text style={styles.noImages}>No Image Selected</Text>
           </View>
         )}
       />
@@ -88,15 +77,7 @@ const GalleryScreen = ({route}) => {
         onPress={() => {
           handelSubmit();
         }}
-        style={[
-          styles.button,
-          {
-            margin: 16,
-            borderRadius: 8,
-            alignItems: 'center',
-            marginHorizontal: 32,
-          },
-        ]}>
+        style={[styles.button, styles.button2]}>
         <Text style={styles.buttonText}>Submit</Text>
       </TouchableOpacity>
     </View>
@@ -108,6 +89,17 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: AppColors.white,
   },
+  flatListContainer: {flex: 1, justifyContent: 'center', alignItems: 'center'},
+  pickerContainer: {
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    margin: 8,
+  },
+  noImages: {
+    fontSize: 14,
+    fontWeight: '700',
+    color: AppColors.secondaryText,
+  },
   button: {
     // position: 'absolute',
     // top: 20,
@@ -116,6 +108,12 @@ const styles = StyleSheet.create({
     padding: 10,
     borderRadius: 5,
     zIndex: 1,
+  },
+  button2: {
+    margin: 16,
+    borderRadius: 8,
+    alignItems: 'center',
+    marginHorizontal: 32,
   },
   buttonText: {
     color: '#fff',

@@ -13,11 +13,7 @@ export default function AppStack() {
         component={Dashboard}
         options={{headerShown: false}}
       />
-      <Stk.Screen
-        name="Upload"
-        component={GalleryScreen}
-        // options={{headerShown: false}}
-      />
+      <Stk.Screen name="Upload" component={GalleryScreen} />
     </Stk.Navigator>
   );
 }

@@ -17,7 +17,6 @@ function LoginPage() {
   const [loading, setLoading] = useState(false);
 
   const handleLogin = async () => {
-    // You can add your authentication logic here
     setLoading(true);
     try {
       await Authservice.login(email, password);
@@ -25,9 +24,6 @@ function LoginPage() {
       showMsg('Invalid credentials');
     }
     setLoading(false);
-    // await Authservice.login(email, password);
-    console.log('Email:', email);
-    console.log('Password:', password);
   };
 
   return (
@@ -64,7 +60,7 @@ function LoginPage() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'white', // White background
+    backgroundColor: AppColors.white, // White background
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -76,7 +72,7 @@ const styles = StyleSheet.create({
   },
   inputView: {
     width: '80%',
-    backgroundColor: 'white', // White background
+    backgroundColor: AppColors.white, // White background
     borderWidth: 1,
     borderColor: '#E5E7EB', // Border color
     borderRadius: 25,

@@ -238,7 +238,6 @@ export default class DatabaseServices {
       .then(doc => {
         if (doc.exists) {
           const data = doc.data();
-          console.log(data);
           return data;
         }
       });
@@ -259,7 +258,7 @@ export default class DatabaseServices {
     console.log(count);
   };
 
-  static getDashboardData = async (page = 4) => {
+  static getDashboardData = async ({page = 4}) => {
     const q = await firestore()
       .collection('user')
       .doc(auth()?.currentUser?.uid)
@@ -292,16 +291,17 @@ export default class DatabaseServices {
 
   static searchStore = async (name = '', filters) => {
     try {
-      const d = await firestore()
+      const queryData = await firestore()
         .collection('user')
         .doc(auth()?.currentUser?.uid)
         .get();
-      const user = d.data();
+      const user = queryData.data();
       const searched = [];
       let storeQueryFilter = firestore()
         .collection('stores')
         .orderBy('name')
-        .startAt(name.toUpperCase());
+        .startAt('U1_' + name.toUpperCase())
+        .endAt('U1_' + name.toUpperCase() + '\uf8ff');
       if (filters) {
         const keys = ['area', 'route', 'type'];
         for (const k of keys) {
@@ -309,18 +309,14 @@ export default class DatabaseServices {
             storeQueryFilter = storeQueryFilter.where(k, '==', filters[k]);
         }
       }
-      
 
-      const q = await storeQueryFilter
-        // .where('area', '==', 'HSR')
-        .get()
-        .then(snap => {
-          snap.forEach(doc => {
-            if (user.stores.includes(doc.id))
-              searched.push({...doc.data(), id: doc.id});
-          });
-          return true;
+      await storeQueryFilter.get().then(snap => {
+        snap.forEach(doc => {
+          if (user.stores.includes(doc.id))
+            searched.push({...doc.data(), id: doc.id});
         });
+        return true;
+      });
       return searched;
     } catch (e) {
       console.log(e);
@@ -338,5 +334,41 @@ export default class DatabaseServices {
       console.log(e);
       return false;
     }
+  };
+  static getAllStores = async () => {
+    const q = await firestore()
+      .collection('user')
+      .doc(auth()?.currentUser?.uid)
+      .get();
+    const user = q.data();
+    const stores = [];
+
+    if (!user || !user.stores || user.stores.length === 0) {
+      return [];
+    }
+
+    const storesCollection = firestore().collection('stores');
+    const batchSize = 10;
+
+    // Fetch stores in batches
+    for (let i = 0; i < user.stores.length; i += batchSize) {
+      const batch = user.stores.slice(i, i + batchSize);
+
+      const storesQuery = storesCollection.where(
+        firestore.FieldPath.documentId(),
+        'in',
+        batch,
+      );
+
+      await storesQuery.get().then(storeQuerySnapshot => {
+        storeQuerySnapshot.forEach(storeDoc => {
+          const storeData = {...storeDoc.data(), id: storeDoc.id};
+          stores.push(storeData);
+        });
+        return true;
+      });
+    }
+
+    return stores;
   };
 }

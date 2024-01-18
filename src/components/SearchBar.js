@@ -6,8 +6,9 @@ import {
   TouchableOpacity,
   StyleSheet,
 } from 'react-native';
-import React from 'react';
+import React, {useMemo} from 'react';
 import AppColors from '../common/AppColors';
+import {useSelector} from 'react-redux';
 
 export default function SearchBar({
   Search,
@@ -16,6 +17,11 @@ export default function SearchBar({
   onSubmit = () => {},
   onFilterClick,
 }) {
+  const {homeFilter: filters} = useSelector(state => state.filter);
+  const isFiltered = useMemo(
+    () => filters.area || filters.type || filters.route,
+    [filters],
+  );
   return (
     <View style={[styles.container, containerStyle]}>
       <View style={[styles.container, {flex: 1, margin: 0}]}>
@@ -46,7 +52,9 @@ export default function SearchBar({
           // elevation: 1,
 
           borderWidth: 1,
-          borderColor: AppColors.secondaryBorder,
+          borderColor: isFiltered
+            ? AppColors.primary
+            : AppColors.secondaryBorder,
           justifyContent: 'center',
           alignItems: 'center',
           marginLeft: 12,

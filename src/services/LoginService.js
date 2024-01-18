@@ -3,6 +3,9 @@ export default class Authservice {
   static login = (email, pass) => {
     return auth().signInWithEmailAndPassword(email, pass);
   };
+  static loginWithNumber = number => {
+    return auth().signInWithPhoneNumber(number);
+  };
   static signup = async (email, pass) => {
     const usr = await auth().createUserWithEmailAndPassword(email, pass);
     //     if (usr != null) {

@@ -4,6 +4,7 @@ import {
   FlatList,
   ActivityIndicator,
   StyleSheet,
+  RefreshControl,
 } from 'react-native';
 import React, {useEffect, useState} from 'react';
 import ShopCard from '../../components/ShopCard';
@@ -12,9 +13,8 @@ import AppColors from '../../common/AppColors';
 import DatabaseServices from '../../services/DatabaseService';
 import {useNavigation} from '@react-navigation/native';
 import AppBar from '../../components/AppBar';
-import FilterComponent from '../../components/FilterUi';
 import BottomFilterModal from '../../components/BottomFilterModal';
-import SnackbarCustom from '../../components/SnackBar';
+import {useSelector} from 'react-redux';
 
 export default function Dashboard() {
   const [storesData, setstoresData] = useState([]);
@@ -22,39 +22,52 @@ export default function Dashboard() {
   const [search, setSearch] = useState('');
   const [noPagination, setNoPagination] = useState(false);
   const [loading, setLoading] = useState(false);
-  const navigation = useNavigation();
   const [showFilter, setShowFilter] = useState(false);
-  const [filters, setFilters] = useState(null);
-
+  const {homeFilter: filters} = useSelector(state => state.filter);
+  const {storeData: cachedData} = useSelector(state => state.dashboard);
   useEffect(() => {
-    integrateData();
+    initData();
   }, []);
 
-  async function integrateData() {
+  async function initData() {
+    if (cachedData) {
+      setstoresData(cachedData);
+      setNoPagination(true);
+      return;
+    }
+    const res = await GetApiData({page: 1});
+    setstoresData([...storesData, ...res.response]);
+    setPagination({total_pages: res.total_pages, current: res.current_page});
+    setLoading(false);
+  }
+
+  async function handlePagination() {
     if (noPagination) return;
     if (
       pagination.total_pages === -1 ||
       pagination.current <= pagination.total_pages
     ) {
       pagination.current++;
-      const d = await DatabaseServices.getDashboardData(pagination.current);
-      setstoresData([...storesData, ...d.response]);
-      setPagination({total_pages: d.total_pages, current: d.current_page});
+      // setLoading(true);
+      const res = await GetApiData();
+      setstoresData([...storesData, ...res.response]);
+      setPagination({total_pages: res.total_pages, current: res.current_page});
+      // setLoading(false);
     }
   }
+  async function GetApiData(extra = {}) {
+    const ApiRes = await DatabaseServices.getDashboardData({
+      page: pagination.current,
+      ...extra,
+    });
+    if (ApiRes.response) return ApiRes;
+    return [];
+  }
 
-  const renderItem = ({item}) => (
-    <ShopCard
-      shopData={item}
-      onPress={() => {
-        navigation.navigate('Upload');
-      }}
-    />
-  );
+  const renderItem = ({item}) => <ShopCard shopData={item} />;
 
   const handleFilter = body => {
     setShowFilter(false);
-    setFilters(body);
     handleSearch(body);
   };
 
@@ -62,11 +75,18 @@ export default function Dashboard() {
     setLoading(true);
     setNoPagination(true);
     const filterToBeAdded = body ? body : filters;
-    const searchData = await DatabaseServices.searchStore(
-      search,
-      filterToBeAdded,
-    );
-    if (searchData) setstoresData(searchData);
+    console.log(filterToBeAdded, 'SS');
+    const searchedData = cachedData.filter(i => {
+      let checked = true;
+      if (filterToBeAdded.area) checked = i.area == filterToBeAdded.area;
+      else if (filterToBeAdded.route)
+        checked = checked && i.route == filterToBeAdded.route;
+      else if (filterToBeAdded.type)
+        checked = checked && i.type == filterToBeAdded.type;
+
+      return checked;
+    });
+    setstoresData(searchedData);
     setLoading(false);
   }
 
@@ -81,7 +101,7 @@ export default function Dashboard() {
       />
       {loading ? (
         <View style={styles.loadingContainer}>
-          <ActivityIndicator size={30} />
+          <ActivityIndicator size={30} color={AppColors.primary} />
         </View>
       ) : (
         <FlatList
@@ -89,7 +109,7 @@ export default function Dashboard() {
           renderItem={renderItem}
           keyExtractor={item => item.id}
           onEndReachedThreshold={0.2}
-          onEndReached={integrateData}
+          onEndReached={handlePagination}
           ListEmptyComponent={() => (
             <View style={styles.noDataContainer}>
               <Text style={styles.noDataText}>No Data Found</Text>
@@ -104,6 +124,14 @@ export default function Dashboard() {
               )}
             </View>
           )}
+          refreshControl={
+            <RefreshControl
+              refreshing={false}
+              onRefresh={initData}
+              progressBackgroundColor={AppColors.primary}
+              colors={[AppColors.white]}
+            />
+          }
         />
       )}
       <BottomFilterModal
