@@ -1,10 +1,12 @@
 import React, { useMemo } from 'react';
 import { View, Text, TextInput, Image, TouchableOpacity, StyleSheet } from 'react-native';
-import AppColors from '../common/AppColors';
 import { useSelector } from 'react-redux';
+import { useTranslation } from 'react-i18next'; // Import useTranslation
 import Assets from '../common/Images';
+import AppColors from '../common/AppColors';
 
 const SearchBar = ({ Search, setSearch, containerStyle = {}, onSubmit = () => {}, onFilterClick }) => {
+  const { t } = useTranslation(); // Use useTranslation hook
   const { homeFilter: filters } = useSelector(state => state.filter);
   const isFiltered = useMemo(() => filters.area || filters.type || filters.route, [filters]);
 
@@ -12,7 +14,7 @@ const SearchBar = ({ Search, setSearch, containerStyle = {}, onSubmit = () => {}
     <View style={[styles.container, containerStyle]}>
       <View style={[styles.inputContainer, { margin: 0 }]}>
         <TextInput
-          placeholder={`Search Stores`}
+          placeholder={t('Search Stores')}
           style={styles.textInput}
           value={Search}
           onChangeText={text => {

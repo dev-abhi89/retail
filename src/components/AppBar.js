@@ -2,6 +2,7 @@ import { View, Text, TouchableOpacity, ActivityIndicator, StyleSheet } from 'rea
 import React, { useState } from 'react';
 import AppColors from '../common/AppColors';
 import Authservice from '../services/LoginService';
+// import { useTranslation } from 'react-i18next';
 
 export default function AppBar({ title = 'Home' }) {
   const [loading, setLoading] = useState(false);
@@ -11,7 +12,7 @@ export default function AppBar({ title = 'Home' }) {
     await Authservice.signout();
     setLoading(false);
   }
-
+const {t}=useTranslation()
   return (
     <View style={styles.container}>
       <Text style={styles.title}>{title}</Text>
@@ -19,7 +20,7 @@ export default function AppBar({ title = 'Home' }) {
         {loading ? (
           <ActivityIndicator size={20} color={AppColors.red} />
         ) : (
-          <Text style={styles.logoutButtonText}>Log out</Text>
+          <Text style={styles.logoutButtonText}>{t('Log out')}</Text>
         )}
       </TouchableOpacity>
     </View>

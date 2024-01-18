@@ -15,7 +15,7 @@ import UseDashboard from './CustomHook';
 
 export default function Dashboard() {
 const [storesData,pagination,search,noPagination,loading,showFilter,setShowFilter,filters,setSearch,setNoPagination,initData,handlePagination,renderItem,handleFilter,handleSearch]=UseDashboard()
-
+const t=i=>i
   return (
     <View style={styles.container}>
       <AppBar />
@@ -38,7 +38,7 @@ const [storesData,pagination,search,noPagination,loading,showFilter,setShowFilte
           onEndReached={handlePagination}
           ListEmptyComponent={() => (
             <View style={styles.noDataContainer}>
-              <Text style={styles.noDataText}>No Data Found</Text>
+              <Text style={styles.noDataText}>{t('No Data Found')}</Text>
             </View>
           )}
           ListFooterComponent={() => (

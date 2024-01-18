@@ -59,7 +59,7 @@ const GalleryScreen = ({route}) => {
       {/* <AppBar title="Upload images" /> */}
       <View style={styles.pickerContainer}>
         <TouchableOpacity onPress={imgPicker} style={styles.button}>
-          <Text style={styles.buttonText}>ADD</Text>
+          <Text style={styles.buttonText}>{t('ADD')}</Text>
         </TouchableOpacity>
       </View>
       <FlatList
@@ -69,7 +69,7 @@ const GalleryScreen = ({route}) => {
         numColumns={2}
         ListEmptyComponent={() => (
           <View style={styles.flatListContainer}>
-            <Text style={styles.noImages}>No Image Selected</Text>
+            <Text style={styles.noImages}>{t('No Image Selected')}</Text>
           </View>
         )}
       />
@@ -78,7 +78,7 @@ const GalleryScreen = ({route}) => {
           handelSubmit();
         }}
         style={[styles.button, styles.button2]}>
-        <Text style={styles.buttonText}>Submit</Text>
+        <Text style={styles.buttonText}>{t('Submit')}</Text>
       </TouchableOpacity>
     </View>
   );

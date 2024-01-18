@@ -1,9 +1,10 @@
 import React from 'react';
-import {StyleSheet, Text, View} from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 import ReactNativeModal from 'react-native-modal';
-import {useDispatch, useSelector} from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { useTranslation } from 'react-i18next'; // Import useTranslation
 import AppColors from '../common/AppColors';
-import {updateHomeFilter} from '../redux/filter/Action';
+import { updateHomeFilter } from '../redux/filter/Action';
 import FilterComponent from './FilterUi';
 
 export default function BottomFilterModal({
@@ -16,12 +17,15 @@ export default function BottomFilterModal({
     route: '',
     area: '',
   };
-  const {homeFilter: filters} = useSelector(state => state.filter);
+  const { t } = useTranslation(); // Use useTranslation hook
+  const { homeFilter: filters } = useSelector((state) => state.filter);
   const dispatch = useDispatch();
+
   function handleClearFilter() {
     dispatch(updateHomeFilter(initialFilters));
     onFilterChange(initialFilters);
   }
+
   return (
     <ReactNativeModal
       onDismiss={handleCancel}
@@ -32,10 +36,10 @@ export default function BottomFilterModal({
       style={styles.modal}>
       <View style={styles.container}>
         <View style={styles.header}>
-          <Text style={styles.title}>Apply Filters</Text>
+          <Text style={styles.title}>{t('Apply Filters')}</Text>
           {filters.area || filters.route || filters.type ? (
             <Text onPress={handleClearFilter} style={styles.filterText}>
-              Clear All Filters
+              {t('Clear All Filters')}
             </Text>
           ) : null}
         </View>
@@ -75,5 +79,10 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     color: AppColors.PrimaryText,
   },
-  filterText: {fontSize: 14, fontWeight: '600', color: AppColors.primary},
+  filterText: { fontSize: 14, fontWeight: '600', color: AppColors.primary },
 });
+
+// {
+//   "Apply Filters": "Apply Filters",
+//   "Clear All Filters": "Clear All Filters"
+// }
