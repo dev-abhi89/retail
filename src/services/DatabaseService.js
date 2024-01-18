@@ -1,6 +1,5 @@
 import firestore from '@react-native-firebase/firestore';
 import auth from '@react-native-firebase/auth';
-import data from '../Data';
 const d = {
   t74P5HDedZbQwl0DoTOzoiNI2Yx2: {
     name: 'Ram',

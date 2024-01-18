@@ -1,30 +1,16 @@
-import {
-  View,
-  Text,
-  TextInput,
-  Image,
-  TouchableOpacity,
-  StyleSheet,
-} from 'react-native';
-import React, {useMemo} from 'react';
+import React, { useMemo } from 'react';
+import { View, Text, TextInput, Image, TouchableOpacity, StyleSheet } from 'react-native';
 import AppColors from '../common/AppColors';
-import {useSelector} from 'react-redux';
+import { useSelector } from 'react-redux';
+import Assets from '../common/Images';
 
-export default function SearchBar({
-  Search,
-  setSearch,
-  containerStyle = {},
-  onSubmit = () => {},
-  onFilterClick,
-}) {
-  const {homeFilter: filters} = useSelector(state => state.filter);
-  const isFiltered = useMemo(
-    () => filters.area || filters.type || filters.route,
-    [filters],
-  );
+const SearchBar = ({ Search, setSearch, containerStyle = {}, onSubmit = () => {}, onFilterClick }) => {
+  const { homeFilter: filters } = useSelector(state => state.filter);
+  const isFiltered = useMemo(() => filters.area || filters.type || filters.route, [filters]);
+
   return (
     <View style={[styles.container, containerStyle]}>
-      <View style={[styles.container, {flex: 1, margin: 0}]}>
+      <View style={[styles.inputContainer, { margin: 0 }]}>
         <TextInput
           placeholder={`Search Stores`}
           style={styles.textInput}
@@ -36,37 +22,22 @@ export default function SearchBar({
           placeholderTextColor={AppColors.secondaryText}
         />
         <TouchableOpacity onPress={onSubmit} style={styles.searchIcon}>
-          <Image
-            source={require('../assets/search.png')}
-            style={styles.iconImage}
-          />
+          <Image source={Assets.search} style={styles.iconImage} />
         </TouchableOpacity>
       </View>
       <TouchableOpacity
         onPress={onFilterClick}
-        style={{
-          width: 40,
-          height: 40,
-          borderRadius: 8,
-          backgroundColor: AppColors.white,
-          // elevation: 1,
-
-          borderWidth: 1,
-          borderColor: isFiltered
-            ? AppColors.primary
-            : AppColors.secondaryBorder,
-          justifyContent: 'center',
-          alignItems: 'center',
-          marginLeft: 12,
-        }}>
-        <Image
-          source={require('../assets/filter.png')}
-          style={{width: 20, height: 20}}
-        />
+        style={[
+          styles.filterIconContainer,
+          {
+            borderColor: isFiltered ? AppColors.primary : AppColors.secondaryBorder,
+          },
+        ]}>
+        <Image source={Assets.filter} style={styles.filterIcon} />
       </TouchableOpacity>
     </View>
   );
-}
+};
 
 const styles = StyleSheet.create({
   container: {
@@ -75,21 +46,26 @@ const styles = StyleSheet.create({
     height: 40,
     alignItems: 'center',
   },
+  inputContainer: {
+    flex: 1,
+    flexDirection: 'row',
+    height: 40,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: AppColors.secondaryBorder,
+  },
   textInput: {
     flex: 1,
     fontFamily: 'PublicSans-Regular',
     fontSize: 14,
     backgroundColor: AppColors.white,
-    height: 40,
     borderRadius: 8,
-    borderWidth: 1,
-    borderColor: AppColors.secondaryBorder,
-    paddingLeft: 40, // Add left padding to accommodate the icon
+    paddingLeft: 40,
   },
   searchIcon: {
     position: 'absolute',
-    right: 10, // Adjust the left position to position the icon as needed
-    top: 10, // Adjust the top position to center the icon vertically
+    right: 10,
+    top: 10,
     width: 20,
     height: 20,
     alignItems: 'center',
@@ -99,4 +75,20 @@ const styles = StyleSheet.create({
     width: 20,
     height: 20,
   },
+  filterIconContainer: {
+    width: 40,
+    height: 40,
+    borderRadius: 8,
+    backgroundColor: AppColors.white,
+    borderWidth: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginLeft: 12,
+  },
+  filterIcon: {
+    width: 20,
+    height: 20,
+  },
 });
+
+export default SearchBar;

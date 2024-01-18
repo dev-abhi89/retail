@@ -23,7 +23,7 @@ const FilterComponent = ({onFilterChange, cancel}) => {
       route: homeFilter.route,
       area: homeFilter.area,
     });
-  }, [homeFilter]);
+  }, []);
 
   const applyFilters = () => {
     dispatch(updateHomeFilter(filters));
