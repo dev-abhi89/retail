@@ -5,6 +5,7 @@ import {persistReducer, persistStore} from 'redux-persist';
 import {configureStore} from '@reduxjs/toolkit';
 import Dashboard from './dashboard/Reducer';
 import Filter from './filter/Reducer';
+import Images from './images/Reducer';
 
 const persistConfig = {
   key: 'dashboard',
@@ -13,9 +14,9 @@ const persistConfig = {
 const rootReducer = combineReducers({
   filter: Filter,
   dashboard: persistReducer(persistConfig, Dashboard),
+  images: persistReducer({...persistConfig, key: 'images'}, Images),
 });
 
-// const persistedReducer = persistReducer(persistConfig, rootReducer);
 export const store = configureStore({
   reducer: rootReducer,
   middleware: getDefaultMiddleware =>

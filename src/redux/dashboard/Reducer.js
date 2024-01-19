@@ -1,4 +1,10 @@
-import {GET_DATA_SUCCESS, REFRESH} from './ActionTypes';
+import {
+  CLEAR_DATA,
+  GET_DATA,
+  GET_DATA_FAILURE,
+  GET_DATA_SUCCESS,
+  REFRESH,
+} from './ActionTypes';
 
 const initialState = {
   storeData: [],
@@ -8,12 +14,14 @@ const initialState = {
 
 export default (state = initialState, action) => {
   switch (action.type) {
-    case REFRESH:
-      return {...state, refresh: action.payload};
+    case GET_DATA:
+      return {...state, loading: true, error: null};
     case GET_DATA_SUCCESS:
-      return {...state, storeData: action.payload};
-    case GET_DATA_SUCCESS:
-      return {...state, storeData: action.payload};
+      return {...state, storeData: action.payload, loading: false};
+    case GET_DATA_FAILURE:
+      return {...state, error: action?.payload, loading: false};
+    case CLEAR_DATA:
+      return {...state, error: null, loading: false, storeData: []};
 
     default:
       return {...state};

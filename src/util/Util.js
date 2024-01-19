@@ -1,11 +1,13 @@
 export function getFilteredSearch(data, searchData) {
-  return data.filter(value => {
-    if (!searchData) return value;
-    if (value.name.toLowerCase().includes(searchData.toLocaleLowerCase()))
-      return value;
+  return data?.filter
+    ? data?.filter(value => {
+        if (!searchData) return value;
+        if (value.name.toLowerCase().includes(searchData.toLocaleLowerCase()))
+          return value;
 
-    return;
-  });
+        return;
+      })
+    : data;
 }
 export function getRouteTypeAreaList(data = []) {
   const values = {route: {}, type: {}, area: {}};

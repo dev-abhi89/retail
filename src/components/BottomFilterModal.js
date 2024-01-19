@@ -1,10 +1,10 @@
 import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import {StyleSheet, Text, View} from 'react-native';
 import ReactNativeModal from 'react-native-modal';
-import { useDispatch, useSelector } from 'react-redux';
-import { useTranslation } from 'react-i18next'; // Import useTranslation
+import {useDispatch, useSelector} from 'react-redux';
+import {useTranslation} from 'react-i18next'; // Import useTranslation
 import AppColors from '../common/AppColors';
-import { updateHomeFilter } from '../redux/filter/Action';
+import {updateHomeFilter} from '../redux/filter/Action';
 import FilterComponent from './FilterUi';
 
 export default function BottomFilterModal({
@@ -17,8 +17,8 @@ export default function BottomFilterModal({
     route: '',
     area: '',
   };
-  const { t } = useTranslation(); // Use useTranslation hook
-  const { homeFilter: filters } = useSelector((state) => state.filter);
+  const {t} = useTranslation(); // Use useTranslation hook
+  const {homeFilter: filters} = useSelector(state => state.filter);
   const dispatch = useDispatch();
 
   function handleClearFilter() {
@@ -44,7 +44,6 @@ export default function BottomFilterModal({
           ) : null}
         </View>
         <FilterComponent
-          onClearFilter={handleClearFilter}
           cancel={handleCancel}
           onFilterChange={onFilterChange}
         />
@@ -79,7 +78,7 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     color: AppColors.PrimaryText,
   },
-  filterText: { fontSize: 14, fontWeight: '600', color: AppColors.primary },
+  filterText: {fontSize: 14, fontWeight: '600', color: AppColors.primary},
 });
 
 // {

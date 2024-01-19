@@ -1,8 +1,9 @@
-import {GET_DROPDOWN_DATA, SET_FILTERS} from './ActionTypes';
+import {GET_DROPDOWN_DATA, REFRESH_APP, SET_FILTERS} from './ActionTypes';
 
 const initialState = {
-  homeFilter: {area: '', type: '', route: ''},
+  homeFilter: {},
   dropDowndata: {route: [], area: [], type: []},
+  refreshApp: false,
 };
 
 export default (state = initialState, action) => {
@@ -11,6 +12,8 @@ export default (state = initialState, action) => {
       return {...state, homeFilter: action.payload};
     case GET_DROPDOWN_DATA:
       return {...state, dropDowndata: action.payload};
+    case REFRESH_APP:
+      return {...state, refreshApp: !state.refreshApp};
 
     default:
       return {...state};

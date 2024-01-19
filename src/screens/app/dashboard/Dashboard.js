@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useMemo} from 'react';
 import {
   ActivityIndicator,
   FlatList,
@@ -11,18 +11,38 @@ import AppColors from '../../../common/AppColors';
 import AppBar from '../../../components/AppBar';
 import BottomFilterModal from '../../../components/BottomFilterModal';
 import SearchBar from '../../../components/SearchBar';
+import {getFilteredSearch} from '../../../util/Util';
 import UseDashboard from './CustomHook';
 
 export default function Dashboard() {
-const [storesData,pagination,search,noPagination,loading,showFilter,setShowFilter,filters,setSearch,setNoPagination,initData,handlePagination,renderItem,handleFilter,handleSearch]=UseDashboard()
-const t=i=>i
+  const [
+    storesData,
+    pagination,
+    search,
+    noPagination,
+    loading,
+    showFilter,
+    filters,
+    setSearch,
+    setShowFilter,
+    setNoPagination,
+    initData,
+    handlePagination,
+    renderItem,
+    handleFilter,
+    handleSearch,
+  ] = UseDashboard();
+  const t = i => i;
+  const searchedData = useMemo(
+    () => getFilteredSearch(storesData, search),
+    [storesData, search],
+  );
   return (
     <View style={styles.container}>
       <AppBar />
       <SearchBar
         setSearch={setSearch}
         Search={search}
-        onSubmit={handleSearch}
         onFilterClick={() => setShowFilter(true)}
       />
       {loading ? (
@@ -31,7 +51,7 @@ const t=i=>i
         </View>
       ) : (
         <FlatList
-          data={storesData}
+          data={searchedData}
           renderItem={renderItem}
           keyExtractor={item => item.id}
           onEndReachedThreshold={0.2}
@@ -45,7 +65,8 @@ const t=i=>i
             <View style={styles.footerContainer}>
               {!storesData.length ||
               pagination.current > pagination.total_pages ||
-              noPagination ? null : (
+              noPagination ||
+              search ? null : (
                 <ActivityIndicator size={20} color={AppColors.primary} />
               )}
             </View>

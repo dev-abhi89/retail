@@ -24,7 +24,7 @@ export default DropdownComponent;
 
 const styles = StyleSheet.create({
   dropdown: {
-    margin: 16,
+    margin: 8,
     height: 50,
     borderColor: AppColors.secondaryBorder,
     borderWidth: 1,
@@ -34,12 +34,12 @@ const styles = StyleSheet.create({
   },
 
   placeholderStyle: {
-    fontSize: 16,
+    fontSize: 14,
     color: AppColors.secondaryText,
   },
   selectedTextStyle: {
-    fontSize: 16,
-    fontWeight: '700',
+    fontSize: 14,
+    fontWeight: '600',
     color: AppColors.PrimaryText,
   },
 });

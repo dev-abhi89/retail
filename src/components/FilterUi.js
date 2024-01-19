@@ -1,5 +1,6 @@
 // FilterComponent.js
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useMemo, useState} from 'react';
+import {useTranslation} from 'react-i18next';
 import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
 import AppColors from '../common/AppColors';
@@ -8,22 +9,21 @@ import DropDownWithPlaceHolder from './DropDownWithPlaceHolder';
 
 const FilterComponent = ({onFilterChange, cancel}) => {
   const {homeFilter, dropDowndata} = useSelector(state => state.filter);
+  const {route, type, area} = useMemo(
+    () => JSON.parse(JSON.stringify(dropDowndata)),
+    [dropDowndata],
+  );
+  const {t} = useTranslation();
   const dispatch = useDispatch();
   const [filters, setFilters] = useState({
     type: '',
     route: '',
     area: '',
   });
+
   const handleInputChange = (field, value) => {
-    setFilters({...filters, [field]: value});
+    setFilters(prev => ({...prev, [field]: value}));
   };
-  useEffect(() => {
-    setFilters({
-      type: homeFilter.type,
-      route: homeFilter.route,
-      area: homeFilter.area,
-    });
-  }, []);
 
   const applyFilters = () => {
     dispatch(updateHomeFilter(filters));
@@ -33,32 +33,34 @@ const FilterComponent = ({onFilterChange, cancel}) => {
   return (
     <View style={styles.container}>
       <DropDownWithPlaceHolder
-        placeholder={'Type'}
-        handleInputChange={val => handleInputChange('type', val.value)}
-        list={dropDowndata?.type}
-        value={filters.type}
+        placeholder={t('Type')}
+        handleInputChange={val => {
+          handleInputChange('type', val.value);
+        }}
+        list={type}
+        value={homeFilter.type}
       />
       <DropDownWithPlaceHolder
-        placeholder={'Route'}
+        placeholder={t('Route')}
         handleInputChange={val => handleInputChange('route', val.value)}
-        list={dropDowndata.route}
-        value={filters.route}
+        list={route}
+        value={homeFilter.route}
       />
       <DropDownWithPlaceHolder
-        placeholder={'Area'}
+        placeholder={t('Area')}
         handleInputChange={val => handleInputChange('area', val.value)}
-        list={dropDowndata.area}
-        value={filters.area}
+        list={area}
+        value={homeFilter.area}
       />
 
       <View style={{flexDirection: 'row', justifyContent: 'space-evenly'}}>
         <TouchableOpacity style={styles.button} onPress={applyFilters}>
-          <Text style={styles.buttonText}>Apply Filters</Text>
+          <Text style={styles.buttonText}>{t('Apply Filters')}</Text>
         </TouchableOpacity>
         <TouchableOpacity
           style={[styles.button, {backgroundColor: AppColors.red}]}
           onPress={cancel}>
-          <Text style={styles.buttonText}>Cancel</Text>
+          <Text style={styles.buttonText}>{t('Cancel')}</Text>
         </TouchableOpacity>
       </View>
     </View>

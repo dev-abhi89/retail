@@ -1,18 +1,34 @@
-import React, { useMemo } from 'react';
-import { View, Text, TextInput, Image, TouchableOpacity, StyleSheet } from 'react-native';
-import { useSelector } from 'react-redux';
-import { useTranslation } from 'react-i18next'; // Import useTranslation
+import React, {useMemo} from 'react';
+import {
+  View,
+  Text,
+  TextInput,
+  Image,
+  TouchableOpacity,
+  StyleSheet,
+} from 'react-native';
+import {useSelector} from 'react-redux';
+import {useTranslation} from 'react-i18next';
 import Assets from '../common/Images';
 import AppColors from '../common/AppColors';
 
-const SearchBar = ({ Search, setSearch, containerStyle = {}, onSubmit = () => {}, onFilterClick }) => {
-  const { t } = useTranslation(); // Use useTranslation hook
-  const { homeFilter: filters } = useSelector(state => state.filter);
-  const isFiltered = useMemo(() => filters.area || filters.type || filters.route, [filters]);
+const SearchBar = ({
+  Search,
+  setSearch,
+  containerStyle = {},
+  onSubmit = () => {},
+  onFilterClick,
+}) => {
+  const {t} = useTranslation();
+  const {homeFilter: filters} = useSelector(state => state.filter);
+  const isFiltered = useMemo(
+    () => filters.area || filters.type || filters.route,
+    [filters],
+  );
 
   return (
     <View style={[styles.container, containerStyle]}>
-      <View style={[styles.inputContainer, { margin: 0 }]}>
+      <View style={[styles.inputContainer, {margin: 0}]}>
         <TextInput
           placeholder={t('Search Stores')}
           style={styles.textInput}
@@ -32,7 +48,9 @@ const SearchBar = ({ Search, setSearch, containerStyle = {}, onSubmit = () => {}
         style={[
           styles.filterIconContainer,
           {
-            borderColor: isFiltered ? AppColors.primary : AppColors.secondaryBorder,
+            borderColor: isFiltered
+              ? AppColors.primary
+              : AppColors.secondaryBorder,
           },
         ]}>
         <Image source={Assets.filter} style={styles.filterIcon} />
@@ -45,13 +63,13 @@ const styles = StyleSheet.create({
   container: {
     margin: 16,
     flexDirection: 'row',
-    height: 40,
+    height: 45,
     alignItems: 'center',
   },
   inputContainer: {
     flex: 1,
     flexDirection: 'row',
-    height: 40,
+    height: 45,
     borderRadius: 8,
     borderWidth: 1,
     borderColor: AppColors.secondaryBorder,
@@ -62,7 +80,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
     backgroundColor: AppColors.white,
     borderRadius: 8,
-    paddingLeft: 40,
+    paddingLeft: 16,
   },
   searchIcon: {
     position: 'absolute',
@@ -78,8 +96,8 @@ const styles = StyleSheet.create({
     height: 20,
   },
   filterIconContainer: {
-    width: 40,
-    height: 40,
+    width: 45,
+    height: 45,
     borderRadius: 8,
     backgroundColor: AppColors.white,
     borderWidth: 1,

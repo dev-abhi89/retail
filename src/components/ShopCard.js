@@ -1,10 +1,10 @@
-import React, { useMemo } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, Image } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import React, {useMemo} from 'react';
+import {View, Text, TouchableOpacity, StyleSheet, Image} from 'react-native';
+import {useNavigation} from '@react-navigation/native';
 import Assets from '../common/Images';
 import AppColors from '../common/AppColors';
 
-const ShopCard = ({ shopData }) => {
+const ShopCard = ({shopData}) => {
   const navigation = useNavigation();
   const name = useMemo(() => {
     try {
@@ -17,7 +17,7 @@ const ShopCard = ({ shopData }) => {
   return (
     <TouchableOpacity
       onPress={() => {
-        navigation.navigate('Upload', { shop: shopData });
+        navigation.navigate('Upload', {shop: shopData});
       }}>
       <View style={styles.card}>
         <View style={styles.rowContainer}>
@@ -31,7 +31,9 @@ const ShopCard = ({ shopData }) => {
           </View>
           <View style={styles.locationContainer}>
             <Image source={Assets.location} style={styles.locationImage} />
-            <Text style={styles.area}>{shopData.area}</Text>
+            <Text style={styles.area}>
+              {shopData.area + ', ' + shopData.route}
+            </Text>
           </View>
         </View>
         <Text style={styles.address}>{shopData.address}</Text>
@@ -47,7 +49,8 @@ const styles = StyleSheet.create({
     borderColor: '#E5E7EB',
     padding: 16,
     borderRadius: 8,
-    marginBottom: 16,
+    marginBottom: 8,
+    marginHorizontal: 16,
     flex: 1,
   },
   rowContainer: {
@@ -63,7 +66,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: AppColors.secondaryBorder,
     borderRadius: 16,
-    paddingVertical: 4,
+    paddingBottom: 4,
     paddingHorizontal: 8,
     justifyContent: 'center',
     alignItems: 'center',
@@ -71,19 +74,19 @@ const styles = StyleSheet.create({
     backgroundColor: AppColors.whiteChatBackground,
   },
   name: {
-    color: '#D45339',
+    color: AppColors.primary,
     fontWeight: 'bold',
     fontSize: 16,
   },
   type: {
     fontSize: 12,
     marginTop: 0,
-    fontWeight: '700',
+    fontWeight: '600',
     color: AppColors.secondaryText,
   },
   area: {
     fontSize: 12,
-    color: '#888',
+    color: AppColors.secondaryText,
     marginTop: 4,
   },
   address: {
@@ -96,9 +99,9 @@ const styles = StyleSheet.create({
     marginRight: 8,
   },
   locationImage: {
-    width: 14,
-    height: 14,
-    marginRight: 8,
+    width: 12,
+    height: 12,
+    marginRight: 4,
   },
 });
 

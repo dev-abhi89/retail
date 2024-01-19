@@ -5,6 +5,7 @@ const {
   GET_DATA_SUCCESS,
   GET_DATA_FAILURE,
   GET_DATA,
+  CLEAR_DATA,
 } = require('./ActionTypes');
 
 export function refreshData(action) {
@@ -21,3 +22,6 @@ export const getAllStoreThunk = payload => async dispatch => {
     dispatch({type: GET_DATA_FAILURE, payload: e?.message});
   }
 };
+export function clearData() {
+  return {type: CLEAR_DATA};
+}

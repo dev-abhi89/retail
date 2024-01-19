@@ -34,7 +34,7 @@ const styles = StyleSheet.create({
   },
   label: {
     marginRight: 8,
-    minWidth: 60,
+    minWidth: 40,
   },
   input: {
     flex: 1,

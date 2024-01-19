@@ -1,4 +1,5 @@
 import React, {useEffect, useState} from 'react';
+import {useTranslation} from 'react-i18next';
 import {
   View,
   Text,
@@ -7,32 +8,41 @@ import {
   StyleSheet,
   ActivityIndicator,
 } from 'react-native';
+import {useDispatch} from 'react-redux';
 import AppColors from '../../common/AppColors';
+import {getAllStoreThunk} from '../../redux/dashboard/Action';
 import Authservice from '../../services/LoginService';
 import showMsg from '../../services/snackBar';
 
 function LoginPage() {
+  const dispatch = useDispatch();
+  const {t} = useTranslation();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
 
   const handleLogin = async () => {
+    if (!email || !password) {
+      showMsg(t('Please fill valid data'));
+      return;
+    }
     setLoading(true);
     try {
       await Authservice.login(email, password);
+      dispatch(getAllStoreThunk());
     } catch (e) {
-      showMsg('Invalid credentials');
+      showMsg(t('Invalid credentials'));
     }
     setLoading(false);
   };
 
   return (
     <View style={styles.container}>
-      <Text style={styles.logo}>Wellcome</Text>
+      <Text style={styles.logo}>{t('Wellcome')}</Text>
       <View style={styles.inputView}>
         <TextInput
           style={styles.inputText}
-          placeholder="Email"
+          placeholder={t('Email')}
           placeholderTextColor="#003f5c"
           onChangeText={text => setEmail(text)}
         />
@@ -41,7 +51,7 @@ function LoginPage() {
         <TextInput
           secureTextEntry
           style={styles.inputText}
-          placeholder="Password"
+          placeholder={t('Password')}
           placeholderTextColor="#003f5c"
           onChangeText={text => setPassword(text)}
         />
@@ -50,7 +60,7 @@ function LoginPage() {
         {loading ? (
           <ActivityIndicator size={20} color={AppColors.white} />
         ) : (
-          <Text style={styles.loginText}>LOGIN</Text>
+          <Text style={styles.loginText}>{t('LOGIN')}</Text>
         )}
       </TouchableOpacity>
     </View>

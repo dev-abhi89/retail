@@ -1,5 +1,7 @@
 import firestore from '@react-native-firebase/firestore';
 import auth from '@react-native-firebase/auth';
+import storage from '@react-native-firebase/storage';
+
 const d = {
   t74P5HDedZbQwl0DoTOzoiNI2Yx2: {
     name: 'Ram',
@@ -229,7 +231,6 @@ export default class DatabaseServices {
   uid = auth()?.currentUser?.uid;
   usr = firestore().collection('user');
   static getdata = async () => {
-    console.log('function');
     return await firestore()
       .collection('user')
       .doc(auth().currentUser.uid)
@@ -249,12 +250,10 @@ export default class DatabaseServices {
       try {
         await firestore().collection('user').doc(k).set(curr);
         count--;
-        console.log(count);
       } catch (e) {
         console.log(e, 'error');
       }
     }
-    console.log(count);
   };
 
   static getDashboardData = async ({page = 4}) => {
@@ -369,5 +368,21 @@ export default class DatabaseServices {
     }
 
     return stores;
+  };
+  static uploadfunc = async (img, shopID) => {
+    const imName = img.fileName;
+
+    const ref = storage().ref().child('images').child(shopID).child(imName);
+    await ref.putFile(img.uri).catch(e => {
+      console.log(e);
+    });
+    try {
+      const link = await ref.getDownloadURL();
+      await DatabaseServices.uploadImage(link, shopID);
+      return true;
+    } catch (e) {
+      console.log(e);
+      return false;
+    }
   };
 }
