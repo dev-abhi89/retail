@@ -1,0 +1,4 @@
+export const SET_FILTERS = 'SET_FILTERS';
+export const GET_DROPDOWN_DATA = 'GET_DROPDOWN_DATA';
+export const REFRESH_APP = 'REFRESH_APP';
+

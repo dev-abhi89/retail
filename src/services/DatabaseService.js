@@ -1,6 +1,7 @@
 import firestore from '@react-native-firebase/firestore';
 import auth from '@react-native-firebase/auth';
-import data from '../Data';
+import storage from '@react-native-firebase/storage';
+
 const d = {
   t74P5HDedZbQwl0DoTOzoiNI2Yx2: {
     name: 'Ram',
@@ -230,7 +231,6 @@ export default class DatabaseServices {
   uid = auth()?.currentUser?.uid;
   usr = firestore().collection('user');
   static getdata = async () => {
-    console.log('function');
     return await firestore()
       .collection('user')
       .doc(auth().currentUser.uid)
@@ -238,7 +238,6 @@ export default class DatabaseServices {
       .then(doc => {
         if (doc.exists) {
           const data = doc.data();
-          console.log(data);
           return data;
         }
       });
@@ -251,15 +250,13 @@ export default class DatabaseServices {
       try {
         await firestore().collection('user').doc(k).set(curr);
         count--;
-        console.log(count);
       } catch (e) {
         console.log(e, 'error');
       }
     }
-    console.log(count);
   };
 
-  static getDashboardData = async (page = 4) => {
+  static getDashboardData = async ({page = 4}) => {
     const q = await firestore()
       .collection('user')
       .doc(auth()?.currentUser?.uid)
@@ -292,16 +289,17 @@ export default class DatabaseServices {
 
   static searchStore = async (name = '', filters) => {
     try {
-      const d = await firestore()
+      const queryData = await firestore()
         .collection('user')
         .doc(auth()?.currentUser?.uid)
         .get();
-      const user = d.data();
+      const user = queryData.data();
       const searched = [];
       let storeQueryFilter = firestore()
         .collection('stores')
         .orderBy('name')
-        .startAt(name.toUpperCase());
+        .startAt('U1_' + name.toUpperCase())
+        .endAt('U1_' + name.toUpperCase() + '\uf8ff');
       if (filters) {
         const keys = ['area', 'route', 'type'];
         for (const k of keys) {
@@ -309,18 +307,14 @@ export default class DatabaseServices {
             storeQueryFilter = storeQueryFilter.where(k, '==', filters[k]);
         }
       }
-      
 
-      const q = await storeQueryFilter
-        // .where('area', '==', 'HSR')
-        .get()
-        .then(snap => {
-          snap.forEach(doc => {
-            if (user.stores.includes(doc.id))
-              searched.push({...doc.data(), id: doc.id});
-          });
-          return true;
+      await storeQueryFilter.get().then(snap => {
+        snap.forEach(doc => {
+          if (user.stores.includes(doc.id))
+            searched.push({...doc.data(), id: doc.id});
         });
+        return true;
+      });
       return searched;
     } catch (e) {
       console.log(e);
@@ -333,6 +327,58 @@ export default class DatabaseServices {
       await firestore()
         .collection('images')
         .add({storeId: uid, imageUrl: link, uploadOn: new Date()});
+      return true;
+    } catch (e) {
+      console.log(e);
+      return false;
+    }
+  };
+  static getAllStores = async () => {
+    const q = await firestore()
+      .collection('user')
+      .doc(auth()?.currentUser?.uid)
+      .get();
+    const user = q.data();
+    const stores = [];
+
+    if (!user || !user.stores || user.stores.length === 0) {
+      return [];
+    }
+
+    const storesCollection = firestore().collection('stores');
+    const batchSize = 10;
+
+    // Fetch stores in batches
+    for (let i = 0; i < user.stores.length; i += batchSize) {
+      const batch = user.stores.slice(i, i + batchSize);
+
+      const storesQuery = storesCollection.where(
+        firestore.FieldPath.documentId(),
+        'in',
+        batch,
+      );
+
+      await storesQuery.get().then(storeQuerySnapshot => {
+        storeQuerySnapshot.forEach(storeDoc => {
+          const storeData = {...storeDoc.data(), id: storeDoc.id};
+          stores.push(storeData);
+        });
+        return true;
+      });
+    }
+
+    return stores;
+  };
+  static uploadfunc = async (img, shopID) => {
+    const imName = img.fileName;
+
+    const ref = storage().ref().child('images').child(shopID).child(imName);
+    await ref.putFile(img.uri).catch(e => {
+      console.log(e);
+    });
+    try {
+      const link = await ref.getDownloadURL();
+      await DatabaseServices.uploadImage(link, shopID);
       return true;
     } catch (e) {
       console.log(e);

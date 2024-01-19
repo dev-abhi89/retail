@@ -3488,7 +3488,15 @@ const data = {
       'MANISH Krishna Kirana Ramghat Road, Vishnupuri, Near water tank, sector 5C, Agra, UP',
   },
 };
-
+const tes={
+  "Apply Filters": "Apply Filters",
+  "Clear All Filters": "Clear All Filters",
+  "Type": "Type",
+  "Route": "Route",
+  "Area": "Area",
+  "Apply Filters": "Apply Filters",
+  "Cancel": "Cancel"
+}
 
 const user = {
   'f9ceb8a8-8d11-4ac2-ba8c-8771613ab2a5': {

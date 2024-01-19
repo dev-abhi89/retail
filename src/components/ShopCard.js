@@ -1,30 +1,41 @@
-import React from 'react';
-import {View, Text, TouchableOpacity, StyleSheet} from 'react-native';
+import React, {useMemo} from 'react';
+import {View, Text, TouchableOpacity, StyleSheet, Image} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
+import Assets from '../common/Images';
+import AppColors from '../common/AppColors';
 
-const ShopCard = ({
-  shopData = {
-    type: 'General Store',
-    name: 'U2_SANJAY TRADERS',
-    route: 'r6',
-    area: 'HSR',
-    address:
-      'AGARWAL SANJAY TRADERS Ramghat Road, Vishnupuri, Near water tank, sector 5C, Agra, UP',
-  },
-  onPress = () => {},
-}) => {
+const ShopCard = ({shopData}) => {
   const navigation = useNavigation();
+  const name = useMemo(() => {
+    try {
+      return shopData.name.split('U1_')[1];
+    } catch {
+      return shopData.name;
+    }
+  }, [shopData]);
 
   return (
     <TouchableOpacity
       onPress={() => {
-        // imgPicker();
         navigation.navigate('Upload', {shop: shopData});
       }}>
       <View style={styles.card}>
-        <Text style={styles.name}>{shopData.name}</Text>
-        <Text style={styles.type}>{shopData.type}</Text>
-        <Text style={styles.area}>{shopData.area}</Text>
+        <View style={styles.rowContainer}>
+          <Image source={Assets.store} style={styles.image} />
+
+          <View style={styles.infoContainer}>
+            <Text style={styles.name}>{name}</Text>
+            <View style={styles.rowContainer}>
+              <Text style={styles.type}>{shopData.type}</Text>
+            </View>
+          </View>
+          <View style={styles.locationContainer}>
+            <Image source={Assets.location} style={styles.locationImage} />
+            <Text style={styles.area}>
+              {shopData.area + ', ' + shopData.route}
+            </Text>
+          </View>
+        </View>
         <Text style={styles.address}>{shopData.address}</Text>
       </View>
     </TouchableOpacity>
@@ -38,25 +49,59 @@ const styles = StyleSheet.create({
     borderColor: '#E5E7EB',
     padding: 16,
     borderRadius: 8,
-    marginBottom: 16,
+    marginBottom: 8,
+    marginHorizontal: 16,
+    flex: 1,
+  },
+  rowContainer: {
+    flexDirection: 'row',
+    justifyContent: 'flex-start',
+    flex: 1,
+  },
+  infoContainer: {
+    flex: 1,
+  },
+  locationContainer: {
+    flexDirection: 'row',
+    borderWidth: 1,
+    borderColor: AppColors.secondaryBorder,
+    borderRadius: 16,
+    paddingBottom: 4,
+    paddingHorizontal: 8,
+    justifyContent: 'center',
+    alignItems: 'center',
+    height: 32,
+    backgroundColor: AppColors.whiteChatBackground,
   },
   name: {
-    color: '#D45339',
+    color: AppColors.primary,
     fontWeight: 'bold',
     fontSize: 16,
   },
   type: {
-    fontSize: 14,
-    marginTop: 8,
+    fontSize: 12,
+    marginTop: 0,
+    fontWeight: '600',
+    color: AppColors.secondaryText,
   },
   area: {
     fontSize: 12,
-    color: '#888',
+    color: AppColors.secondaryText,
     marginTop: 4,
   },
   address: {
     fontSize: 12,
     marginTop: 4,
+  },
+  image: {
+    width: 40,
+    height: 40,
+    marginRight: 8,
+  },
+  locationImage: {
+    width: 12,
+    height: 12,
+    marginRight: 4,
   },
 });
 
